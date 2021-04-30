@@ -1,0 +1,48 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light  m-0">
+  <a class="navbar-brand" href="{% url 'senior_dashboard_view' %}">My Profile</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'search_caregivers' %}"> Search Caregivers </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'display_matched_caregivers' %}">{% if messages %}
+          {% for message in messages %}
+          {% if message.tags %}
+          <script>alert("{{ message }}")</script> {% endif %}
+
+          {% endfor %}
+
+          {% endif %} My Caregivers </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'get_chats' %}">My Messages</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="{% url 'payment_summary' %}">My Payments</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'forum' %}">Forum 
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'about_us' %}">About us 
+        </a>
+      </li>
+    </ul>
+
+    <ul class="navbar-nav ml-auto" style="position: absolute; right: 5%;"> 
+      <li class="nav-item"> 
+          <a class="nav-link" href="{% url 'logout' %}"> 
+            Logout 
+          </a> 
+      </li> 
+    </ul>
+  </div>
+</nav>
+<div class="mb-5 p-0" style="background-color: #474e5d; height:1px;">&nbsp;</div>

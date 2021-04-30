@@ -1,0 +1,409 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Citizen's Hive</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+        <link rel="stylesheet" type="text/css" href="{% static 'css/caregiver_dashboard.css' %}">
+        <meta name="viewport" content="width=device-width, initial-scale=1" >
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+        <link rel="stylesheet" type="text/css" href="{% static 'css/caregiver_dashboard.css' %}">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="{% static 'javascript/caregiver_dashboard.js' %}">
+        </script>
+        <script>
+            function dispHomePhotos(that) {
+                if (that.value == "at_caregivers") {
+                    document.getElementById("home_image").style.display = "block";
+                    document.getElementById("home_image_label").style.display = "block";
+                } 
+                else {
+                    document.getElementById("home_image").style.display = "none";
+                    document.getElementById("home_image_label").style.display = "none";
+                }
+            }
+        </script>
+        <style>
+          .card {
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+          margin: 8px;
+          width: 100%;
+          float: center;
+          }
+          label {
+          text-align: left;
+          color: #474e5d;
+          font-size:16px;
+          }
+          h1 {
+            color: #474e5d;
+          }
+          </style>
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags %}
+<script>alert("{{ message }}")</script> {% endif %}
+{% endfor %}
+{% endif %}
+    </head>
+    
+    {% include "navbar_caregiver.html" %}
+    
+
+    <body>
+      <div class="container text-center" style="border-bottom: 1px solid #E8E8E8;">
+
+        <h1>My Profile</h1>
+      </div>
+
+        <div id="modal1" class="modal" style="overflow: scroll;">
+          <form  class="modal-content animate" style="margin: 0 auto" action="{% url 'caregiver_dashboard_view' %}" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="container">
+            <div class="row p-4" >
+                <div class="col-md-3 pt-5" style="height: 35%; width: 35%;">
+                    <img src="{{ record.profile_image.url }}" alt="" class="img-fluid" style="width: 100%; margin-top: 5%;">
+                    <br><br>
+                    <input type="file" name="profile_image" id="profile_image" class="profile_image">
+                </div>
+                <div class="col-md-8 py-4" style="border-left: 1px solid #E8E8E8; margin-left: 26px;">
+                  <!-- <form action="{% url 'caregiver_dashboard_view' %}" method="POST" enctype="multipart/form-data"> -->
+                  <table>
+                    <tr>
+                      <td>
+                        <label for="dob"><b>Date of Birth</b></label>
+                      </td>
+                      <td>
+                        {% if record.dob == None %}
+                          <input type="date" placeholder="Enter Date of Birth" name="dob" id="dob" >
+                          {% else %}
+                          <body>{{ record.dob}}</body>
+                          {% endif %}
+                      </td>
+                    </tr>
+                  
+                    <tr>
+                      <td>
+                        <label for="availability"> <b> Type of Care</b></label>
+                      </td>
+                      <td>
+                        <select name="availability" value="{{ record.availability }}" id="availability" onchange="dispHomePhotos(this);">
+                                      <option value="at_seniors" {% if record.availability in "at_seniors" %} selected="selected" {% endif %}>At Senior's place</option>
+                                      <option value="hourly" {% if record.availability in "hourly" %} selected="selected" {% endif %}>Hourly</option>
+                                      <option value="at_caregivers" {% if record.availability in "at_caregivers" %} selected="selected" {% endif %}>At my own home</option>
+                                    </select>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <label for="free"><b>Days available (if hourly)</b></label>
+                      </td>
+                        <td>
+                        <input type="text" placeholder="None" name="day" id="day" >
+                      </td>
+
+                    </tr>
+                    
+                    <tr>
+
+                        <td>
+                        <label for="free"><b>Hours/day (if hourly)</b></label>
+                      </td>
+                      <td>
+                          <input type="text" placeholder="None" name="hour" id="hour" >
+                      </td>
+                     
+                    </tr>
+                  
+                  
+                    <tr>
+                      <td>
+                        <label for="zip"><b>Zip Code</b></label>
+                      </td>
+                      <td>
+                        {% if record.zip_code == '' %}
+                          <input type="text" placeholder="Enter Zip Code" name="zip" id="zip" >
+                          {% else %}
+                          <input type="text" value="{{ record.zip_code }}" name="zip" id="zip">
+                          {% endif %}
+                      </td>
+                    </tr>
+                  
+                    <tr>
+                      <td>
+                        <label for="city"><b>City</b></label>
+                      </td>
+                      <td>
+                         <input type="text" value="{{ record.city }}" name="city" id="city">
+                      </td>
+                    </tr>
+                  
+                    <tr>
+                      <td>
+                        <label for="state"><b>State</b></label>
+                      </td>
+                      <td>
+                        <input type="text" name="state" value="{{ record.state }}" id="state">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <label for="start_date"><b>Start Date</b></label>
+                      </td>
+                      <td>
+                        {% if record.start_date == None %}
+                          <input type="date" placeholder="Enter Start Date" name="start_date" id="sd" >
+                          {% else %}
+                          <input type="date" value="{{record.start_date|date:'Y-m-d'}}" name="start_date" id="sd">
+                          {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <label for="end_date"><b>End Date</b></label>
+                      </td>
+                      <td>
+                        {% if record.end_date == None %}
+                          <input type="date" placeholder="Enter End Date" name="end_date" id="ed" >
+                          {% else %}
+                          <input type="date" value="{{record.end_date|date:'Y-m-d'}}" name="end_date" id="ed">
+                          {% endif %}
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                          <label for="bio"><b>Bio</b></label>
+                      </td>
+                      <td>
+                          <input type="text" name="bio" value="{{ record.bio }}" id="bio">
+                      </td>
+                    </tr>
+                    <tr id="home_image_label" style="display: block;">
+                        <td padding="2px 0px 0px">
+                            <label for="home_image"><b>Home Photo</b></label>
+                        </td>
+                        
+                      </tr>
+                  </table>
+                  
+                  <table>                    
+                      <tr id="home_image" style="display: block;">
+                      <!-- <div id="home_photos" style="display: none"> -->
+                      <td>
+                          <img src="{{ record.home_image.url }}" class="img-fluid" style="max-width:120px">
+                    <br><br>
+                    <input type="file" name="home_image" id="home_image" class="home_image">
+                      </td>
+                      
+                    </tr>
+                  </table>
+                    
+                    <input class="btn btn-dark btn-sm" style="font-size:medium" type="submit" onclick="document.getElementById('modal1').style.display='none'" name="submit_edit" id="submit_edit" value="Submit" >
+                    
+            </div>
+        </div>
+              </div>
+        </form>
+        </div>
+
+          <!-- Caregiver Profile Data -->
+          <div class="container">
+            <form action="{% url 'caregiver_dashboard_view' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+            <div class="row">
+              <div class="col-md-3" style="border-right: 1px solid #E8E8E8; height: 35%; width: 35%;">
+                <!-- {% if profile_image_url == 'default' %}
+                  <img src="{% static 'images/person_avatar.png' %}" alt="" style="width: 100%; height: 40%;">
+                {% else %}
+                  <img src="{{ profile_image_url }}" alt="" style="width: 100%; height: 40%;">
+                {% endif %} -->
+                <img src="{{ record.profile_image.url }}" alt="" style="width: 100%; height: 100%;">
+                
+        
+            </div>
+
+                <div class="col-md-9" style="border-left: 1px solid #E8E8E8;">
+                  <!-- <form action="{% url 'caregiver_dashboard_view' %}" method="POST"> -->
+                      {% csrf_token %}
+                  <button type="button" onclick="document.getElementById('modal1').style.display='block'" class="btn btn-dark btn-sm" class="edit_profile" id="edit_profile" style="right: 0; position: absolute;width: 100px;">
+                      <span class="glyphicon glyphicon-edit"></span> Edit
+                  </button>
+
+                  <br>
+                  <div class="row"></div>
+                  <h2>{{ record.name }}</h2>
+                  <table>
+                    <tr>
+                      <td class="profile">
+                        <label for="email"><b>Email</b></label>
+                      </td>
+                      <td>
+                        {{ record.email }}
+                      </td>
+                    </tr>
+                  
+                    <tr>
+                      <td class="profile">
+                        <label for="dob"><b>Date of Birth</b></label>
+                      </td>
+                      <td>
+                        {{ record.dob}}
+                      </td>
+                    </tr>
+                  
+                    <tr>
+                      <td class="profile">
+                        <label for="availability"> <b> Availability Preference</b></label>
+                      </td>
+                      <td>
+                        {% if record.availability == 'at_seniors' %}
+                      <body>At senior's home</body>
+                      {% elif record.availability == 'at_caregivers' %}
+                      <body>At my own home</body>
+                      {% else %}
+                      <body>Hourly: {{record.day}} for {{record.hour}} hours</body>
+                      {% endif %}
+                    </td>
+                    </tr>
+                  
+                    <tr>
+                      <td class="profile">
+                        <label for="zip"><b>Zip Code</b></label>
+                      </td>
+                      <td>
+                        <body>
+                          {% if record.zip_code == '' %}
+                          <script> document.getElementById('modal1').style.display='block';</script>
+                          {% else %}
+                          {{ record.zip_code }}
+                          {% endif %}
+                        </body>
+                      </td>
+                    </tr>
+                  
+                    <tr>
+                      <td class="profile">
+                        <label for="city"><b>City</b></label>
+                      </td>
+                      <td>
+                        {{ record.city }}
+                      </td>
+                    </tr>
+                  
+                    <tr>
+                      <td class="profile">
+                        <label for="state"><b>State</b></label>
+                      </td>
+                      <td>
+                        {{ record.state }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="profile">
+                        <label for="start_date"><b>Start Date</b></label>
+                      </td>
+                      <td>
+                            
+                          {% if record.start_date == None %}
+                          <script> document.getElementById('modal1').style.display='block';</script>
+                          {% else %}
+                          {{ record.start_date }}
+                          {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="profile">
+                        <label for="end_date"><b>End Date</b></label>
+                      </td>
+                      <td>{% if record.end_date == None %}
+                          <script> document.getElementById('modal1').style.display='block';</script>
+                          {% else %}
+                          {{ record.end_date }}
+                          {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="profile">
+                        <b>Bio</b>
+                      </td>
+                      <td>
+                        {{ record.bio }}
+                      </td>
+                    </tr>
+                    {% if record.availability == 'at_caregivers' %}
+                    <tr>
+                        <td class="profile">
+                            <b>Home Photo</b>
+                          </td>
+                      </tr>
+                  </table>
+                  <table>
+                    <tr>
+                        <td>
+                          <img src="{{ record.home_image.url }}" alt="" class="img-fluid my-auto" style="max-width: 120px; ">
+                       </td>
+                  </tr>
+                  </table>
+                  
+                  {% else %}
+                    </table>
+                {% endif %}
+                  <!-- <label for="name"> <b>Name</b></label>
+                  <input type="text" value="{{ record.name }}" name="name" id="name" disabled> <br>
+
+                  <label for="email"><b>Email</b></label>
+                  <input type="text" value="{{ record.email }}" name="email" id="email" disabled><br>
+
+                  <label for="dob"><b>Date of Birth</b></label>
+                  <input type="date" name="dob" id="dob" disabled><br>
+
+                  <label for="availability"> <b> Availability Preference</b></label>
+
+                  <select name="availability" id="availability" disabled>
+                  <option value="at_seniors">Living at my place</option>
+                  <option value="at_caregivers">Living at Caregiver's place</option>
+                  </select>
+                  <br>
+
+                  <label for="zip"><b>Zip Code</b></label>
+                  <input type="text" name="zip" id="zip" disabled><br>
+
+                  <label for="city"><b>City</b></label>
+                  <input type="text" name="city" id="city" disabled><br>
+
+                  <label for="state"><b>State</b></label>
+                  <input type="text" name="state" id="state" disabled><br> -->
+
+                  <!-- <b>Bio</b><br>
+                  
+                  <textarea name="bio" id="bio" style="width: 90%;" rows="10" disabled></textarea><br> -->
+                 
+                   
+              
+                  
+          </div>
+          </div>
+        <!-- </form> -->
+    </body>
+    <script>
+        // Get the modal
+        var modal = document.getElementById('modal1');
+        
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            //event.preventDefault();
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+        </script>
+</html>
